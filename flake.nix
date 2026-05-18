@@ -9,12 +9,12 @@
   inputs.unpins-lib.url = "github:unpins/nix-lib";
 
   # Linux/macOS: pkgsStatic.dash (with libedit for interactive line editing).
-  # Windows: routed through Cosmopolitan (`windowsCosmo = true`) because mingw
-  # cross of dash is blocked by the same gnulib/POSIX-fork gaps that block
-  # bash/coreutils — dash's job control needs real fork() and signal handling.
-  # Cosmocc implements fork() on Windows via CreateProcessW + page copy.
-  # Per-target cosmo fix in `unpins/nix-lib/cosmo/dash.nix` (drop libedit,
-  # apelink ELF→PE in postFixup).
+  # Windows: routed through Cosmopolitan (`windowsBuild = import ./cosmo.nix
+  # …`) because mingw cross of dash is blocked by the same gnulib/POSIX-fork
+  # gaps that block bash/coreutils — dash's job control needs real fork()
+  # and signal handling. Cosmocc implements fork() on Windows via
+  # CreateProcessW + page copy. Per-binary cosmo recipe inline in
+  # `./cosmo.nix` (drop libedit, apelink ELF→PE in postFixup).
   #
   # dash uses libedit for line editing in interactive mode. libedit links
   # ncurses to look up terminal capabilities. Without our fallback list
@@ -29,7 +29,7 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "dash";
-      windowsCosmo = true;
+      windowsBuild = import ./cosmo.nix { inherit unpins-lib; };
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
