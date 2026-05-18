@@ -15,10 +15,10 @@
 { unpins-lib }:
 pkgs:
 let
-  cs = import "${unpins-lib.outPath}/cosmocc.nix" { pkgs = pkgs.buildPackages; };
   cosmoPkgs = unpins-lib.lib.cosmoStaticCross pkgs;
 in
-cosmoPkgs.dash.overrideAttrs (oa: {
+unpins-lib.lib.cosmoApelink pkgs { binName = "dash"; }
+  (cosmoPkgs.dash.overrideAttrs (oa: {
   # nixpkgs's preConfigure exports `LIBS` only when
   # `hostPlatform.isStatic` is true — our cosmo cross doesn't match
   # that gate, so the libedit-via-pkg-config flags never reach the
@@ -37,16 +37,4 @@ cosmoPkgs.dash.overrideAttrs (oa: {
       "-Wno-implicit-function-declaration"
     ];
   };
-
-  # apelink converts the single-arch cosmo ELF in-place to a PE32+
-  # Windows binary. -V picks the Windows half from the polyglot
-  # platform mask. Runs in postFixup (not postBuild) to mirror the
-  # coreutils pattern: any later passes work against the .exe.
-  postFixup = (oa.postFixup or "") + ''
-    ${cs.cosmocc}/bin/apelink \
-      -V ${toString cs.platformBits.windows} \
-      -o $out/bin/dash.exe \
-      $out/bin/dash
-    rm -f $out/bin/dash
-  '';
-})
+}))
