@@ -10,15 +10,14 @@
 #     overlay (see nix-lib/cosmo/libedit.nix); the upstream nixpkgs
 #     preConfigure already exports `LIBS="$(pkg-config --libs --static
 #     libedit)"` which now resolves cleanly under cosmo.
-#   - apelink ELF -> PE32+ in postFixup so `bin/dash.exe` is what
-#     gets stripped/joined upstream.
+#   - ELF → PE32+ rename to `dash.exe` happens automatically via the
+#     cosmo cross stdenv's apelink setup hook.
 { unpins-lib }:
 pkgs:
 let
   cosmoPkgs = unpins-lib.lib.cosmoStaticCross pkgs;
 in
-unpins-lib.lib.cosmoApelink pkgs { binName = "dash"; }
-  (cosmoPkgs.dash.overrideAttrs (oa: {
+cosmoPkgs.dash.overrideAttrs (oa: {
   # nixpkgs's preConfigure exports `LIBS` only when
   # `hostPlatform.isStatic` is true — our cosmo cross doesn't match
   # that gate, so the libedit-via-pkg-config flags never reach the
@@ -37,4 +36,4 @@ unpins-lib.lib.cosmoApelink pkgs { binName = "dash"; }
       "-Wno-implicit-function-declaration"
     ];
   };
-}))
+})
