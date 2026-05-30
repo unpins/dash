@@ -29,6 +29,15 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "dash";
+
+      # Smoke floor on every native ABI + the Windows runner. dash has no
+      # `--version` (it errors on `--`), so exercise the interpreter itself:
+      # `-c 'echo …'` must print the sentinel. Confirms argv parsing, the
+      # builtin echo, and (on cosmo) that the ELF→PE apelink produced a
+      # runnable binary.
+      smoke = [ "-c" "echo unpins-smoke-ok" ];
+      smokePattern = "unpins-smoke-ok";
+
       windowsBuild = import ./cosmo.nix { inherit unpins-lib; };
       build = pkgs:
         let

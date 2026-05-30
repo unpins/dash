@@ -42,4 +42,9 @@ The first invocation will offer to add the [unpins.cachix.org](https://unpins.ca
 
 ## Manual download
 
-The [Releases](https://github.com/unpins/dash/releases) page has standalone binaries and a `.tar.zst` data archive (man pages) for manual download.
+The [Releases](https://github.com/unpins/dash/releases) page has standalone binaries for manual download.
+
+## Build notes
+
+- **Man page** — `dash.1` is embedded inside the binary (the `.unpin_man` block, on both the native ELF and the cosmo `.exe`), so `unpin man dash` works offline with no companion file.
+- **Tests** — `doCheck` is off because there is nothing to run: dash ships **no test suite** (`make check` is automake's empty no-op; the tarball has no `tests/` dir, and `src/bltin/test.c` is the `test`/`[` builtin's *source*, not a harness). The smoke test (`dash -c 'echo …'`) is the runtime floor instead.
