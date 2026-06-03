@@ -11,18 +11,19 @@ Part of the [unpins](https://unpins.org) project — native single-binary builds
 
 Linux/macOS use `pkgsStatic` with libedit for interactive line editing. Windows is built via [Cosmopolitan](https://justine.lol/cosmopolitan/) (cosmocc cross-toolchain inside Nix) because mingw cross of dash hits the same fork/signal gaps that block bash/coreutils — dash's job control needs a real `fork()`. Cosmocc implements it on Windows via `CreateProcessW` + page copy. Line editing is disabled on Windows (no libedit port through cosmo); scripts and interactive use both work, just without arrow-key history at the prompt.
 
-## Installation
+## Usage
 
-Install with [unpin](https://github.com/unpins/unpin):
+Run the `dash` program with [unpin](https://github.com/unpins/unpin):
 
 ```bash
-unpin dash
+unpin dash -c 'echo hello'    # run a command
+unpin dash                    # start an interactive shell
 ```
 
-Or run without installing:
+To install it onto your PATH:
 
 ```bash
-unpin run dash
+unpin install dash
 ```
 
 ## Build locally
