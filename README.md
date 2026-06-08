@@ -1,13 +1,13 @@
 # dash
 
-Standalone build of [dash](http://gondor.apana.org.au/~herbert/dash/), a small, fast POSIX `/bin/sh` implementation (the Debian Almquist Shell).
+[dash](http://gondor.apana.org.au/~herbert/dash/), a small, fast POSIX `/bin/sh` implementation (the Debian Almquist Shell). A single self-contained binary, built natively for Linux, macOS, and Windows.
 
 [![CI](https://github.com/unpins/dash/actions/workflows/dash.yml/badge.svg)](https://github.com/unpins/dash/actions)
 ![Linux](https://img.shields.io/badge/Linux-✓-success?logo=linux&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-✓-success?logo=apple&logoColor=white)
 ![Windows](https://img.shields.io/badge/Windows-✓-success?logo=windows&logoColor=white)
 
-Part of the [unpins](https://unpins.org) project — native single-binary builds with no third-party runtime dependencies.
+Part of the [unpins](https://unpins.org) catalog; install it with [`unpin`](https://github.com/unpins/unpin): `unpin install dash`.
 
 Linux/macOS use `pkgsStatic` with libedit for interactive line editing. Windows is built via [Cosmopolitan](https://justine.lol/cosmopolitan/) (cosmocc cross-toolchain inside Nix) because mingw cross of dash hits the same fork/signal gaps that block bash/coreutils — dash's job control needs a real `fork()`. Cosmocc implements it on Windows via `CreateProcessW` + page copy. Line editing is disabled on Windows (no libedit port through cosmo); scripts and interactive use both work, just without arrow-key history at the prompt.
 
