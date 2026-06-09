@@ -30,6 +30,13 @@
       inherit self;
       name = "dash";
 
+      # nixpkgs lists [ bsd3 gpl2Plus ]; the GPL entry covers mksignames.c, a
+      # build-time generator borrowed from bash (only its output — the signal
+      # name table — lands in the binary). Upstream COPYING and the distros
+      # (Debian, Fedora, Alpine) label dash BSD-3-Clause; pin the effective
+      # license to that.
+      license = "BSD-3-Clause";
+
       # Smoke floor on every native ABI + the Windows runner. dash has no
       # `--version` (it errors on `--`), so exercise the interpreter itself:
       # `-c 'echo …'` must print the sentinel. Confirms argv parsing, the
