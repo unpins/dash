@@ -1,0 +1,66 @@
+--- a/src/exec.c
++++ b/src/exec.c
+@@ -100,6 +100,41 @@
+ STATIC int describe_command(struct output *, char *, const char *, int);
+
+
++#ifdef __COSMOCC__
++/*
++ * On Windows/Cosmopolitan, PATH executables carry a ".exe" suffix that the
++ * user normally omits.  Given a candidate path freshly written into the
++ * stack-string buffer by padvance(), if the bare path does not exist, retry
++ * once with ".exe" appended.  On success the suffix is left appended to the
++ * SAME stack buffer (grown as needed) so the eventual execve() uses it; *pp
++ * is updated to the (possibly relocated) buffer.  Returns 1 if ".exe" was
++ * applied, 0 otherwise (buffer left unchanged).  Avoids a double ".exe".
++ */
++STATIC int
++cosmo_exe_fixup(char **pp)
++{
++	char *cmd = *pp;
++	size_t plen = strlen(cmd);
++	struct stat64 sb;
++
++	if (plen >= 4 && strcmp(cmd + plen - 4, ".exe") == 0)
++		return 0;
++	if (stat64(cmd, &sb) == 0)
++		return 0;
++
++	/* Ensure room for ".exe" (4) + NUL; growstackto may relocate. */
++	cmd = growstackto(plen + 5);
++	strcpy(cmd + plen, ".exe");
++	if (stat64(cmd, &sb) == 0) {
++		*pp = cmd;
++		return 1;
++	}
++	cmd[plen] = '\0';	/* restore bare path */
++	*pp = cmd;
++	return 0;
++}
++#endif
++
+ /*
+  * Exec a program.  Never returns.  If you change this routine, you may
+  * have to change the find_command routine as well.
+@@ -122,6 +157,9 @@
+ 		while (padvance(&path, argv[0]) >= 0) {
+ 			cmdname = stackblock();
+ 			if (--idx < 0 && pathopt == NULL) {
++#ifdef __COSMOCC__
++				cosmo_exe_fixup(&cmdname);
++#endif
+ 				tryexec(cmdname, argv, envp);
+ 				if (errno != ENOENT && errno != ENOTDIR)
+ 					e = errno;
+@@ -465,6 +503,11 @@
+ 			if (errno == EINTR)
+ 				continue;
+ #endif
++#ifdef __COSMOCC__
++			if ((errno == ENOENT || errno == ENOTDIR) &&
++			    cosmo_exe_fixup(&fullname))
++				continue;	/* re-stat the .exe path */
++#endif
+ 			if (errno != ENOENT && errno != ENOTDIR)
+ 				e = errno;
+ 			goto loop;
