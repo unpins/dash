@@ -30,6 +30,13 @@
       inherit self;
       name = "dash";
 
+      # Build via the unpin-llvm engine + emit a bitcode multicall module.
+      engine = "unpin-llvm";
+      multicall = {
+        inferLinkInputs = true;
+        programs = [{ name = "dash"; }];
+      };
+
       # nixpkgs lists [ bsd3 gpl2Plus ]; the GPL entry covers mksignames.c, a
       # build-time generator borrowed from bash (only its output — the signal
       # name table — lands in the binary). Upstream COPYING and the distros
