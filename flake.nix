@@ -34,6 +34,8 @@
       engine = "unpin-llvm";
       multicall = {
         inferLinkInputs = true;
+        # Fold into the darwin (Mach-O) mega via the engine, same as grep/bc.
+        darwin = true;
         programs = [{ name = "dash"; }];
       };
 
