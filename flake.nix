@@ -22,7 +22,6 @@
 
       engine = "unpin-llvm";
       multicall = {
-        inferLinkInputs = true;
         programs = [{ name = "dash"; }];
       };
 
