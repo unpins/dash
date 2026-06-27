@@ -38,10 +38,11 @@
       build = pkgs:
         let
           p = pkgs.pkgsStatic;
-          ncursesFB = unpins-lib.lib.embedFallbackTerminfo p.ncurses;
+          # Fallback terminfo is baked centrally for every engine-Linux build
+          # (native-overlay/ncurses.nix), so p.ncurses already carries it.
         in
         p.dash.override {
-          libedit = p.libedit.override { ncurses = ncursesFB; };
+          libedit = p.libedit.override { ncurses = p.ncurses; };
         };
     };
 }
