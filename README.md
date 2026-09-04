@@ -9,8 +9,6 @@
 
 Part of the [unpins](https://unpins.org) catalog; install it with [`unpin`](https://github.com/unpins/unpin): `unpin install dash`.
 
-Linux/macOS use `pkgsStatic` with libedit for interactive line editing. Windows is built via [Cosmopolitan](https://justine.lol/cosmopolitan/) (cosmocc cross-toolchain inside Nix) because mingw cross of dash hits the same fork/signal gaps that block bash/coreutils — dash's job control needs a real `fork()`. Cosmocc implements it on Windows via `CreateProcessW` + page copy. Line editing is disabled on Windows (no libedit port through cosmo); scripts and interactive use both work, just without arrow-key history at the prompt.
-
 ## Usage
 
 Run the `dash` program with [unpin](https://github.com/unpins/unpin):
@@ -25,6 +23,10 @@ To install it onto your PATH:
 ```bash
 unpin install dash
 ```
+
+## Man pages
+
+`dash.1` is embedded in the binary — read it with `unpin man dash`.
 
 ## Build locally
 
@@ -47,5 +49,6 @@ The [Releases](https://github.com/unpins/dash/releases) page has standalone bina
 
 ## Build notes
 
-- **Man page** — `dash.1` is embedded inside the binary (the `.unpin_man` block, on both the native ELF and the cosmo `.exe`), so `unpin man dash` works offline with no companion file.
+- **Windows** uses [Cosmopolitan](https://justine.lol/cosmopolitan/), not mingw: dash needs a real `fork()`, which mingw does not provide.
+- **Line editing** is on for Linux and macOS (libedit) and off on Windows, which has no libedit through cosmo — scripts and interactive use both work there, just without arrow-key history at the prompt.
 - **Tests** — `doCheck` is off because there is nothing to run: dash ships **no test suite** (`make check` is automake's empty no-op; the tarball has no `tests/` dir, and `src/bltin/test.c` is the `test`/`[` builtin's *source*, not a harness). The smoke test (`dash -c 'echo …'`) is the runtime floor instead.
