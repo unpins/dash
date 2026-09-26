@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.5.13.3-2] - 2026-09-26
+
 ### Fixed
 
 - On Windows, a bare command name typed at the dash prompt now runs. Catalog
