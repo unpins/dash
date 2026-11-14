@@ -30,11 +30,4 @@ cosmoPkgs.dash.overrideAttrs (oa: {
   postPatch = (oa.postPatch or "") + ''
     patch -p1 < ${./findcmd-exe-lookup.patch}
   '';
-
-  env = (oa.env or { }) // {
-    NIX_CFLAGS_COMPILE = builtins.concatStringsSep " " [
-      (oa.env.NIX_CFLAGS_COMPILE or "")
-      "-Wno-implicit-function-declaration"
-    ];
-  };
 })
