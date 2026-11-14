@@ -11,10 +11,6 @@
   # Windows goes through Cosmopolitan, not mingw: same gnulib/POSIX-fork gaps as
   # bash/coreutils block the mingw cross. Cosmocc emulates fork() via
   # CreateProcessW.
-  #
-  # Swap libedit's ncurses for the embedded-fallbacks variant so interactive
-  # line editing works without host /usr/share/terminfo (Alpine, scratch). Host
-  # terminfo still wins when present.
   outputs = { self, unpins-lib }:
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;

@@ -1,17 +1,6 @@
-# dash via cosmoStaticCross for Windows-x86_64.
-#
-# nixpkgs 25.11 ships dash 0.5.13.2. Builds clean against cosmocc 4.0.2
-# without any source patches — superconfigure's minimal.diff (5 hunks of
-# `mbstate_t = {}` → `{0}`) turned out unnecessary at this cosmocc
-# version.
-#
-# Two deltas vs the nixpkgs derivation:
-#   - libedit's static link chain is satisfied by our cosmo libedit
-#     overlay (see nix-lib/cosmo/libedit.nix); the upstream nixpkgs
-#     preConfigure already exports `LIBS="$(pkg-config --libs --static
-#     libedit)"` which now resolves cleanly under cosmo.
-#   - ELF → PE32+ rename to `dash.exe` happens automatically via the
-#     cosmo cross stdenv's apelink setup hook.
+# dash via cosmoStaticCross for Windows-x86_64. libedit comes from the cosmo
+# overlay (nix-lib/cosmo/libedit.nix); apelink's setup hook renames the result
+# to `dash.exe`.
 { unpins-lib }:
 pkgs:
 let
