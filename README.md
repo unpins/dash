@@ -50,5 +50,5 @@ The [Releases](https://github.com/unpins/dash/releases) page has standalone bina
 ## Build notes
 
 - **Windows** uses [Cosmopolitan](https://justine.lol/cosmopolitan/), not mingw: dash needs a real `fork()`, which mingw does not provide.
-- **Line editing** is on for Linux and macOS (libedit) and off on Windows, which has no libedit through cosmo — scripts and interactive use both work there, just without arrow-key history at the prompt.
+- **Line editing** (libedit) is built in on Linux, macOS and Windows. As upstream, it is off until you ask for it: start `dash -E` (emacs keys) or `dash -V` (vi keys), or run `set -o emacs`.
 - **Tests** — `doCheck` is off because there is nothing to run: dash ships **no test suite** (`make check` is automake's empty no-op; the tarball has no `tests/` dir, and `src/bltin/test.c` is the `test`/`[` builtin's *source*, not a harness). The smoke test (`dash -c 'echo …'`) is the runtime floor instead.
